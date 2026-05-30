@@ -1,0 +1,62 @@
+[
+    {
+        "uuid": "a1b2c3d4-0001",
+        "name": "Dawood",
+        "avatarPath": "resources/avatars/dawood.png",
+        "ip": "192.168.1.101",
+        "phone": "03284184123",
+        "email": "dawood@gmail.com",
+        "notes": "noted",
+        "isFav": false
+    },
+    {
+        "uuid": "a1b2c3d4-0002",
+        "name": "Ahmad",
+        "avatarPath": "resources/avatars/ahmad.png",
+        "ip": "192.168.1.102",
+        "phone": "03268834123",
+        "email": "ahmad@hotmail.com",
+        "notes": "",
+        "isFav": false
+    },
+    {
+        "uuid": "a1b2c3d4-0003",
+        "name": "Zain",
+        "avatarPath": "resources/avatars/zain.png",
+        "ip": "192.168.1.103",
+        "phone": "03366424123",
+        "email": "zain@gmail.com",
+        "notes": "",
+        "isFav": false
+    },
+    {
+        "uuid": "a1b2c3d4-0004",
+        "name": "Shariq",
+        "avatarPath": "resources/avatars/shariq.png",
+        "ip": "192.168.1.104",
+        "phone": "03191404123",
+        "email": "shariq@outlook.com",
+        "notes": "The CR himself",
+        "isFav": true
+    },
+    {
+        "uuid": "a1b2c3d4-0005",
+        "name": "Muhammad Subhan",
+        "avatarPath": "resources/avatars/subhan.png",
+        "ip": "192.168.1.105",
+        "phone": "03076444123",
+        "email": "subhan@yahoo.com",
+        "notes": "Creator of Subhan Hospital",
+        "isFav": true
+    },
+    {
+        "uuid": "a1b2c3d4-0006",
+        "name": "Faiz",
+        "avatarPath": "resources/avatars/faiz.png",
+        "ip": "192.168.1.106",
+        "phone": "03096554123",
+        "email": "faiz@gmail.com",
+        "notes": "Creator of Contact-Hub",
+        "isFav": true
+    }
+]

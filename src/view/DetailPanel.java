@@ -1,138 +1,127 @@
 package view;
 
 import model.Contact;
+import model.Theme;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
-import com.formdev.flatlaf.ui.FlatRoundBorder;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/** Panel containing contact details and contact action buttons. */
 public class DetailPanel extends JPanel {
 
-    // Colors
-    private final Color bgMain        = new Color(13, 17, 23);
-    private final Color bgCard        = new Color(22, 27, 34);
-
-    private final Color textPrimary   = new Color(230, 237, 243);
-    private final Color textSecondary = new Color(125, 133, 144);
-
-    private final Color accentBlue    = new Color(31, 111, 235);
-    private final Color accentRed     = new Color(180, 40, 40);
-    private final Color accentGray    = new Color(33, 38, 45);
-
-    private final Color borderColor   = new Color(48, 54, 61);
-
-    // PFP + Name 
+    // Avatar + Name 
     private JLabel avatar    = new JLabel();
     private JLabel nameLabel = new JLabel();
     private JLabel favLabel  = new JLabel();
 
-    // Info rows
+    // Contact Information Labels
     private JLabel phoneLabel = new JLabel();
     private JLabel emailLabel = new JLabel();
-    private JLabel ipLabel    = new JLabel();
     private JLabel notesLabel = new JLabel();
+    private JLabel ipLabel    = new JLabel();
     
-    // Info rows
-    private JPanel infoLabelBox        = new JPanel();
-    private JPanel infoFieldBox        = new JPanel();
-
+    // Contact Information Fields
     private JTextField nameField  = new JTextField();
     private JTextField phoneField = new JTextField();
     private JTextField emailField = new JTextField();
-    private JTextField ipField    = new JTextField();
     private JTextField notesField = new JTextField();
+    private JTextField ipField    = new JTextField();
 
-    // Action buttons
+    // Contact Information Wrapper/Containers
+    private JPanel contactInfoLabels = new JPanel();
+    private JPanel contactInfoFields = new JPanel();
+
+    // Contact Action buttons
     private JButton favButton    = new JButton("Fav");
     private JButton editButton   = new JButton("Edit");
     private JButton deleteButton = new JButton("Delete");
 
-    // Panels
-    private JPanel buttonRow;
-
     DetailPanel() {
         setLayout(new BorderLayout());
-        setBackground(bgMain);
-
+        setBackground(Theme.BG_MAIN);
         setBorder(BorderFactory.createEmptyBorder(32, 32, 32, 32));
 
         initAvatarBox();
-        initInfoLabelBox();
-        initInfoFieldBox();
-
-        initActionButtonRow();
+        createContactInfoLabels();
+        createContactInfoFields();
+        initActionButtons();
     }
 
     private void initAvatarBox() {
-        JPanel avatarBox = new JPanel();
-        avatarBox.setLayout(new BoxLayout(avatarBox, BoxLayout.Y_AXIS));
-        avatarBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-        avatarBox.setBackground(bgMain);
+        JPanel contactHeader = new JPanel();
+        contactHeader.setLayout(new BoxLayout(contactHeader, BoxLayout.Y_AXIS));
+        contactHeader.setBackground(Theme.BG_MAIN);
+        contactHeader.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // Avatar
         avatar.setAlignmentX(Component.CENTER_ALIGNMENT);
         avatar.setPreferredSize(new Dimension(100, 100));
 
+        // Name
         nameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
-        nameLabel.setForeground(textPrimary);
+        nameLabel.setForeground(Theme.TEXT_PRIMARY);
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // Fav label
         favLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
-        favLabel.setForeground(new Color(200,200,0));
+        favLabel.setForeground(Theme.ACCENT_YELLOW);
         favLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        avatarBox.add(avatar);
-        avatarBox.add(Box.createVerticalStrut(12));
-        avatarBox.add(nameLabel);
-        avatarBox.add(Box.createVerticalStrut(2));
-        avatarBox.add(favLabel);
-        avatarBox.add(Box.createVerticalStrut(24));
+        contactHeader.add(avatar);
+        contactHeader.add(Box.createVerticalStrut(12));
+        contactHeader.add(nameLabel);
+        contactHeader.add(Box.createVerticalStrut(4));
+        contactHeader.add(favLabel);
+        contactHeader.add(Box.createVerticalStrut(24));
 
-        // avatarBox.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
-        add(avatarBox, BorderLayout.NORTH);
+        add(contactHeader, BorderLayout.NORTH);
     }
 
-    private void initInfoLabelBox() {
-        infoLabelBox.setLayout(new BoxLayout(infoLabelBox, BoxLayout.Y_AXIS));
-        infoLabelBox.setBackground(bgMain);
+    private void createContactInfoLabels() {
+        contactInfoLabels.setLayout(new BoxLayout(contactInfoLabels, BoxLayout.Y_AXIS));
+        contactInfoLabels.setBackground(Theme.BG_MAIN);
 
-        infoLabelBox.add(createInfoLabelRow("Phone", phoneLabel));
-        infoLabelBox.add(Box.createVerticalStrut(1));
-        infoLabelBox.add(createInfoLabelRow("Email", emailLabel));
-        infoLabelBox.add(Box.createVerticalStrut(1));
-        infoLabelBox.add(createInfoLabelRow("IP",    ipLabel));
-        infoLabelBox.add(Box.createVerticalStrut(1));
-        infoLabelBox.add(createInfoLabelRow("Notes", notesLabel));
-        infoLabelBox.add(Box.createVerticalStrut(28));
+        var gap = Box.createVerticalStrut(1);
+        
+        contactInfoLabels.add(createLabelRow("Phone", phoneLabel));
+        contactInfoLabels.add(gap);
+        contactInfoLabels.add(createLabelRow("Email", emailLabel));
+        contactInfoLabels.add(gap);
+        contactInfoLabels.add(createLabelRow("IP",    ipLabel));
+        contactInfoLabels.add(gap);
+        contactInfoLabels.add(createLabelRow("Notes", notesLabel));
+        contactInfoLabels.add(gap);
 
-        add(infoLabelBox, BorderLayout.CENTER);
+        add(contactInfoLabels, BorderLayout.CENTER);
     }
 
-    private void initInfoFieldBox() {
-        infoFieldBox.setLayout(new BoxLayout(infoFieldBox, BoxLayout.Y_AXIS));
-        infoFieldBox.setBackground(bgMain);
+    private void createContactInfoFields() {
+        contactInfoFields.setLayout(new BoxLayout(contactInfoFields, BoxLayout.Y_AXIS));
+        contactInfoFields.setBackground(Theme.BG_MAIN);
 
-        infoFieldBox.add(createInfoFieldRow("Name", nameField));
-        infoFieldBox.add(Box.createVerticalStrut(1));
-        infoFieldBox.add(createInfoFieldRow("Phone", phoneField));
-        infoFieldBox.add(Box.createVerticalStrut(1));
-        infoFieldBox.add(createInfoFieldRow("Email", emailField));
-        infoFieldBox.add(Box.createVerticalStrut(1));
-        infoFieldBox.add(createInfoFieldRow("IP", ipField));
-        infoFieldBox.add(Box.createVerticalStrut(1));
-        infoFieldBox.add(createInfoFieldRow("Notes", notesField));
+        var gap = Box.createVerticalStrut(1);
+
+        contactInfoFields.add(createFieldRow("Name", nameField));
+        contactInfoFields.add(gap);
+        contactInfoFields.add(createFieldRow("Phone", phoneField));
+        contactInfoFields.add(gap);
+        contactInfoFields.add(createFieldRow("Email", emailField));
+        contactInfoFields.add(gap);
+        contactInfoFields.add(createFieldRow("IP", ipField));
+        contactInfoFields.add(gap);
+        contactInfoFields.add(createFieldRow("Notes", notesField));
     }
 
-    private JPanel createInfoLabelRow(String fieldName, JLabel valueLabel) {
+    private JPanel createLabelRow(String fieldName, JLabel valueLabel) {
         JPanel row = new JPanel(new BorderLayout(16, 0));
-        row.setBackground(bgCard);
+        row.setBackground(Theme.BG_CARD);
         row.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createMatteBorder(0, 0, 1, 0, borderColor),
+            BorderFactory.createMatteBorder(0, 0, 1, 0, Theme.BORDER_COLOR),
             BorderFactory.createEmptyBorder(10, 14, 10, 14)
         ));
 
@@ -140,11 +129,11 @@ public class DetailPanel extends JPanel {
 
         JLabel fieldLabel = new JLabel(fieldName+":-");
         fieldLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
-        fieldLabel.setForeground(textSecondary);
+        fieldLabel.setForeground(Theme.TEXT_SECONDARY);
         fieldLabel.setPreferredSize(new Dimension(56, 22));
 
         valueLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
-        valueLabel.setForeground(textPrimary);
+        valueLabel.setForeground(Theme.TEXT_PRIMARY);
 
         row.add(fieldLabel, BorderLayout.WEST);
         row.add(valueLabel, BorderLayout.CENTER);
@@ -152,36 +141,35 @@ public class DetailPanel extends JPanel {
         return row;
     }
 
-    private JPanel createInfoFieldRow(String fieldName, JTextField field) {
+    private JPanel createFieldRow(String fieldName, JTextField field) {
         JPanel row = new JPanel(new BorderLayout(16, 0));
-        row.setBackground(bgCard);
+        row.setBackground(Theme.BG_CARD);
         row.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createMatteBorder(0, 0, 1, 0, borderColor),
+            BorderFactory.createMatteBorder(0, 0, 1, 0, Theme.BORDER_COLOR),
             BorderFactory.createEmptyBorder(10, 14, 10, 14)
         ));
 
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
-        JLabel fieldLabel = new JLabel(fieldName+":-");
+        JLabel fieldLabel = new JLabel(fieldName + ":-");
         fieldLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
-        fieldLabel.setForeground(textSecondary);
+        fieldLabel.setForeground(Theme.TEXT_SECONDARY);
         fieldLabel.setPreferredSize(new Dimension(56, 22));
 
         styleEditField(field);
 
         row.add(fieldLabel, BorderLayout.WEST);
         row.add(field, BorderLayout.CENTER);
-        // row.setBorder(new FlatRoundBorder());
         return row;
     }
 
-    private void initActionButtonRow() {
-        buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonRow.setBackground(bgMain);
+    private void initActionButtons() {
+        JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonRow.setBackground(Theme.BG_MAIN);
 
-        styleActionButton(favButton,    accentBlue, textPrimary);
-        styleActionButton(editButton,   accentGray, textPrimary);
-        styleActionButton(deleteButton, accentRed,  Color.WHITE);
+        styleActionButton(favButton,    Theme.ACCENT_BLUE, Theme.TEXT_PRIMARY);
+        styleActionButton(editButton,   Theme.ACCENT_GRAY, Theme.TEXT_PRIMARY);
+        styleActionButton(deleteButton, Theme.ACCENT_RED , Theme.TEXT_PRIMARY);
 
         favButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         editButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -200,6 +188,7 @@ public class DetailPanel extends JPanel {
         button.setForeground(fg);
         button.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setFocusPainted(false);
     }
 
     public void showContact(Contact contact) {
@@ -211,12 +200,11 @@ public class DetailPanel extends JPanel {
         emailLabel.setText(contact.getEmail().isEmpty() ? "—" : contact.getEmail());
         ipLabel.setText(contact.getIP().isEmpty()       ? "—" : contact.getIP());
         notesLabel.setText(contact.getNotes().isEmpty() ? "—" : contact.getNotes());
-        favLabel.setText(contact.isFav()                ? "★ Favorite" : " ");
+        favLabel.setText(contact.getFav()                ? "★ Favorite" : " ");
         
-        SwingUtilities.invokeLater(()->{
-            revalidate();
-            repaint();
-        });
+        
+        revalidate();
+        repaint();
     }
 
     public void enterEditMode(Contact contact) {
@@ -226,12 +214,12 @@ public class DetailPanel extends JPanel {
         ipField.setText(contact.getIP());
         notesField.setText(contact.getNotes());
 
-        remove(infoLabelBox);
-        add(infoFieldBox, BorderLayout.CENTER);
+        remove(contactInfoLabels);
+        add(contactInfoFields, BorderLayout.CENTER);
 
-        nameLabel.setVisible(false); // As Name Label is part of Avatar Box
-
+        nameLabel.setVisible(false); // Hide label to allow editing via field
         editButton.setText("Save");
+        avatar.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         revalidate();
         repaint();
@@ -244,31 +232,22 @@ public class DetailPanel extends JPanel {
         contact.setIP(ipField.getText().trim());
         contact.setNotes(notesField.getText().trim());
 
-        remove(infoFieldBox);
-        add(infoLabelBox, BorderLayout.CENTER);
-
-        nameLabel.setVisible(true);
-        editButton.setText("Edit");
+        remove(contactInfoFields);
+        add(contactInfoLabels, BorderLayout.CENTER);
+        
         showContact(contact);
+        nameLabel.setVisible(true);
+        
+        editButton.setText("Edit");
+        avatar.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 
-        SwingUtilities.invokeLater(() -> {
-            revalidate();
-            repaint();
-        });
+        revalidate();
+        repaint();
     }
 
     private void styleEditField(JTextField field) {
         field.setBackground(new Color(33, 38, 45));
         field.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
-        // field.setForeground(new Color(230, 237, 243));
-        // field.setCaretColor(new Color(230, 237, 243));
-        // field.setBorder(BorderFactory.createCompoundBorder(
-        //     BorderFactory.createLineBorder(, 1),
-        //     BorderFactory.createEmptyBorder(2, 6, 2, 6) // Internal padding
-        // ));
-        // field.putClientProperty("JComponent.roundRect", true);
-        // field.putClientProperty("JComponent.arc", 10);
-        // field.putClientProperty("JComponent.outline", "default");
     }
 
     public void clearPanel() {
@@ -296,6 +275,7 @@ public class DetailPanel extends JPanel {
         return new ImageIcon();
     }  
 
+    public JLabel  getAvatar()       { return avatar;       }
     public JButton getFavButton()    { return favButton;    }
     public JButton getEditButton()   { return editButton;   }
     public JButton getDeleteButton() { return deleteButton; }

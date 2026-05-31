@@ -1,6 +1,7 @@
 package view;
 
 import model.Contact;
+import model.Theme;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -10,12 +11,7 @@ import java.io.File;
 
 public class ContactCard extends JPanel {
 
-    static final Color bgNormal   = new Color(22, 27, 34);
-    static final Color bgHover    = new Color(30, 38, 50);
-    static final Color bgSelected = new Color(20, 50, 90);
 
-    static final Color textPrimary   = new Color(230, 237, 243);
-    static final Color textSecondary = new Color(125, 133, 144);
 
     private JLabel avatarLabel = new JLabel();
     private JPanel textBlock   = new JPanel();
@@ -27,7 +23,7 @@ public class ContactCard extends JPanel {
     public ContactCard(Contact contact) {
         setLayout(new BorderLayout(12, 0));
         setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
-        setBackground(bgNormal);
+        setBackground(Theme.BG_CARD);
 
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         setPreferredSize(new Dimension(250, 60));
@@ -54,10 +50,10 @@ public class ContactCard extends JPanel {
 
         addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent e) {
-                if (!selected) setCardBackground(bgHover);
+                if (!selected) setCardBackground(Theme.CARD_HOVER);
             }
             public void mouseExited(java.awt.event.MouseEvent e) {
-                if (!selected) setCardBackground(bgNormal);
+                if (!selected) setCardBackground(Theme.BG_CARD);
             }
         });
     }
@@ -70,11 +66,11 @@ public class ContactCard extends JPanel {
 
     private void initLabels(String name, String phone) {
         nameLabel.setText(name);
-        nameLabel.setForeground(textPrimary);
+        nameLabel.setForeground(Theme.TEXT_PRIMARY);
         nameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
 
         numLabel.setText(phone);
-        numLabel.setForeground(textSecondary);
+        numLabel.setForeground(Theme.TEXT_SECONDARY);
         numLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
     }
 
@@ -100,7 +96,7 @@ public class ContactCard extends JPanel {
 
     public void toggleSelected(boolean selected) {
         this.selected = selected;
-        setCardBackground(selected ? bgSelected : bgNormal);
+        setCardBackground(selected ? Theme.CARD_SELECTED : Theme.BG_CARD);
     }
 
     private void setCardBackground(Color color) {

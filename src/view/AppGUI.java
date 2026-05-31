@@ -1,6 +1,6 @@
 package view;
 
-import model.Contact;
+import model.Theme;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +9,7 @@ import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+/** The Main GUI of the class */
 public class AppGUI {
 
     private final int windowWidth  = 960;
@@ -16,33 +17,22 @@ public class AppGUI {
 
     private JFrame frame = new JFrame("Contact-Hub");
 
-    // Left panel
+    /// Left panel
     private JPanel     sidePanel   = new JPanel(new BorderLayout(0, 0));
+
     private JTextField searchField = new JTextField();
     private JButton    allButton   = new JButton("All");
     private JButton    favButton   = new JButton("Favorites");
 
-    private JScrollPane scrollpane = new JScrollPane(); // A scrollable view to the contact list
-    private JPanel     contactList = new JPanel();
-    private JButton    newContactButton  = new JButton("+ New Contact");
+    private JPanel     contactList      = new JPanel();
+    private JButton    newContactButton = new JButton("+ New Contact");
+    private JScrollPane scrollpane      = new JScrollPane();             // A scrollable view to the contact list
 
     // Right panel
     private DetailPanel detailPanel = new DetailPanel();
 
     // Contacts
-    private ArrayList<ContactCard> cards = new ArrayList<>();
-
-    // Colors
-    private final Color bgMain        = new Color(13, 17, 23);
-    private final Color bgSidepanel   = new Color(22, 27, 34);
-
-    private final Color textPrimary   = new Color(230, 237, 243);
-    private final Color textSecondary = new Color(125, 133, 144);
-
-    private final Color accentBlue    = new Color(31, 111, 235);
-    private final Color accentGray    = new Color(33, 38, 45);
-
-    private final Color borderColor   = new Color(48, 54, 61);
+    private ArrayList<ContactCard> contactCards = new ArrayList<>();
 
     public AppGUI() {
         initWindow();
@@ -57,19 +47,19 @@ public class AppGUI {
         frame.setSize(windowWidth, windowHeight);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
-        frame.getContentPane().setBackground(bgMain);
+        frame.getContentPane().setBackground(Theme.BG_MAIN);
     }
 
     private void initLeftPanel() {
         int width = (windowWidth * 30) / 100; // ~30% of window
 
         sidePanel.setPreferredSize(new Dimension(width, windowHeight));
-        sidePanel.setBackground(bgSidepanel);
-        sidePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, borderColor));
+        sidePanel.setBackground(Theme.BG_SIDEPANEL);
+        sidePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Theme.BORDER_COLOR));
 
         JPanel topBox = new JPanel();
         topBox.setLayout(new BoxLayout(topBox, BoxLayout.Y_AXIS));
-        topBox.setBackground(bgSidepanel);
+        topBox.setBackground(Theme.BG_SIDEPANEL);
         topBox.setBorder(BorderFactory.createEmptyBorder(16, 12, 12, 12));
 
         initSearchField();
@@ -80,7 +70,7 @@ public class AppGUI {
 
         JPanel filterButtonsRow = new JPanel();
         filterButtonsRow.setLayout(new BoxLayout(filterButtonsRow, BoxLayout.X_AXIS));
-        filterButtonsRow.setBackground(bgSidepanel);
+        filterButtonsRow.setBackground(Theme.BG_SIDEPANEL);
         filterButtonsRow.add(allButton);
         filterButtonsRow.add(favButton);
 
@@ -97,27 +87,27 @@ public class AppGUI {
     }
 
     private void initSearchField() {
-        searchField.setBackground(accentGray);   // Field Color
-        searchField.setForeground(textPrimary);  // Text Color
-        searchField.setCaretColor(textPrimary);  // Cursor Color
+        searchField.setBackground(Theme.ACCENT_GRAY);   // Field Color
+        searchField.setForeground(Theme.TEXT_PRIMARY);  // Text Color
+        searchField.setCaretColor(Theme.TEXT_PRIMARY);  // Cursor Color
 
         searchField.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14)); 
         searchField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(borderColor, 2),
+            BorderFactory.createLineBorder(Theme.BORDER_COLOR, 2),
             BorderFactory.createEmptyBorder(7, 10, 7, 10)
         ));
 
         searchField.setPreferredSize(new Dimension(1000, 40));
 
         searchField.setText("Search contacts...");
-        searchField.setForeground(textSecondary); // Placeholder Text Color
+        searchField.setForeground(Theme.TEXT_SECONDARY); // Placeholder Text Color
 
         searchField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
                 if (searchField.getText().equals("Search contacts...")) {
                     searchField.setText("");
-                    searchField.setForeground(textPrimary);
+                    searchField.setForeground(Theme.TEXT_PRIMARY);
                 }
             }
 
@@ -125,7 +115,7 @@ public class AppGUI {
             public void focusLost(FocusEvent e) {
                 if (searchField.getText().isEmpty()) {
                     searchField.setText("Search contacts...");
-                    searchField.setForeground(textSecondary);
+                    searchField.setForeground(Theme.TEXT_SECONDARY);
                 }
             }
         });
@@ -138,17 +128,17 @@ public class AppGUI {
 
     private void initContactList() {
         contactList.setLayout(new BoxLayout(contactList, BoxLayout.Y_AXIS));
-        contactList.setBackground(bgSidepanel);
+        contactList.setBackground(Theme.BG_SIDEPANEL);
     }
 
     private void initNewContactButton() {
         newContactButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14)); 
-        newContactButton.setBackground(bgSidepanel);
-        newContactButton.setForeground(accentBlue);
+        newContactButton.setBackground(Theme.BG_SIDEPANEL);
+        newContactButton.setForeground(Theme.ACCENT_BLUE);
         newContactButton.setFocusPainted(false);
         newContactButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         newContactButton.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor),
+            BorderFactory.createMatteBorder(1, 0, 0, 0, Theme.BORDER_COLOR),
             BorderFactory.createEmptyBorder(16, 16, 16, 16)
         ));
     }
@@ -156,9 +146,9 @@ public class AppGUI {
     private void initScrollPane() {
         scrollpane = new JScrollPane(contactList);
         scrollpane.setBorder(BorderFactory.createEmptyBorder());
-        scrollpane.setBackground(bgSidepanel);
-        scrollpane.getViewport().setBackground(bgSidepanel);
-        scrollpane.getVerticalScrollBar().setBackground(bgSidepanel);
+        scrollpane.setBackground(Theme.BG_SIDEPANEL);
+        scrollpane.getViewport().setBackground(Theme.BG_SIDEPANEL);
+        scrollpane.getVerticalScrollBar().setBackground(Theme.BG_SIDEPANEL);
         scrollpane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     }
     
@@ -167,11 +157,11 @@ public class AppGUI {
         button.setFocusPainted(false); // Removes Tab highlighting
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(active ? accentBlue : borderColor, 1),
+            BorderFactory.createLineBorder(active ? Theme.ACCENT_BLUE : Theme.BORDER_COLOR, 1),
             BorderFactory.createEmptyBorder(8, 12, 4, 12)
         ));
-        button.setBackground(active ? accentBlue  : accentGray);
-        button.setForeground(active ? textPrimary : textSecondary);
+        button.setBackground(active ? Theme.ACCENT_BLUE  : Theme.ACCENT_GRAY);
+        button.setForeground(active ? Theme.TEXT_PRIMARY : Theme.TEXT_SECONDARY);
     }
 
     // True = All Active, False = FavBtn Active
@@ -188,12 +178,12 @@ public class AppGUI {
 
     // Utils
     public void addContactCard(ContactCard card) {
-        cards.add(card);
+        contactCards.add(card);
         contactList.add(card);
     }
 
     public void clearContactCards() {
-        cards.clear();
+        contactCards.clear();
         contactList.removeAll();
         contactList.revalidate();
         contactList.repaint();
@@ -210,6 +200,6 @@ public class AppGUI {
     public JButton           getFavButton()        { return favButton; }
     public JTextField        getSearchField()      { return searchField; }
     public DetailPanel       getDetailPanel()      { return detailPanel; }
-    public JButton           getNewContactButton() { return newContactButton;}
-    public List<ContactCard> getCards()            { return cards; }
+    public JButton           getNewContactButton() { return newContactButton; }
+    public List<ContactCard> getContactCards()     { return contactCards; }
 }

@@ -5,6 +5,8 @@ import model.Contact;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import com.formdev.flatlaf.ui.FlatRoundBorder;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -26,9 +28,9 @@ public class DetailPanel extends JPanel {
     private final Color borderColor   = new Color(48, 54, 61);
 
     // PFP + Name 
-    private JLabel avatarLabel = new JLabel();
-    private JLabel nameLabel   = new JLabel();
-    private JLabel favLabel    = new JLabel();
+    private JLabel avatar    = new JLabel();
+    private JLabel nameLabel = new JLabel();
+    private JLabel favLabel  = new JLabel();
 
     // Info rows
     private JLabel phoneLabel = new JLabel();
@@ -64,7 +66,7 @@ public class DetailPanel extends JPanel {
         initInfoLabelBox();
         initInfoFieldBox();
 
-        initButtonRow();
+        initActionButtonRow();
     }
 
     private void initAvatarBox() {
@@ -73,24 +75,25 @@ public class DetailPanel extends JPanel {
         avatarBox.setAlignmentX(Component.CENTER_ALIGNMENT);
         avatarBox.setBackground(bgMain);
 
-        avatarLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        avatarLabel.setPreferredSize(new Dimension(90, 90));
+        avatar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        avatar.setPreferredSize(new Dimension(100, 100));
 
-        nameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 22));
+        nameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
         nameLabel.setForeground(textPrimary);
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        favLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        favLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
         favLabel.setForeground(new Color(200,200,0));
         favLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        avatarBox.add(avatarLabel);
+        avatarBox.add(avatar);
         avatarBox.add(Box.createVerticalStrut(12));
         avatarBox.add(nameLabel);
-        avatarBox.add(Box.createVerticalStrut(4));
+        avatarBox.add(Box.createVerticalStrut(2));
         avatarBox.add(favLabel);
         avatarBox.add(Box.createVerticalStrut(24));
 
+        // avatarBox.setBorder(BorderFactory.createLineBorder(Color.RED, 3));
         add(avatarBox, BorderLayout.NORTH);
     }
 
@@ -159,20 +162,20 @@ public class DetailPanel extends JPanel {
 
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
-        JLabel fieldLabel = new JLabel(fieldName);
-        fieldLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+        JLabel fieldLabel = new JLabel(fieldName+":-");
+        fieldLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
         fieldLabel.setForeground(textSecondary);
-        fieldLabel.setPreferredSize(new Dimension(52, 20));
+        fieldLabel.setPreferredSize(new Dimension(56, 22));
 
         styleEditField(field);
 
         row.add(fieldLabel, BorderLayout.WEST);
         row.add(field, BorderLayout.CENTER);
-
+        // row.setBorder(new FlatRoundBorder());
         return row;
     }
 
-    private void initButtonRow() {
+    private void initActionButtonRow() {
         buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonRow.setBackground(bgMain);
 
@@ -193,28 +196,30 @@ public class DetailPanel extends JPanel {
 
     private void styleActionButton(JButton button, Color bg, Color fg) {
         button.setBackground(bg);
+        button.setPreferredSize(new Dimension(80,30));
         button.setForeground(fg);
         button.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
-        button.setFocusPainted(false); // Remove tab highlight
-        button.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     public void showContact(Contact contact) {
-        avatarLabel.setIcon(loadAvatar(contact.getAvatarPath(), 90));
+        avatar.setIcon(loadAvatar(contact.getAvatarPath(), 100));
+        avatar.setHorizontalAlignment(SwingConstants.CENTER);
+        // avatar.setBorder(BorderFactory.createLineBorder(Color.red,2));
         nameLabel.setText(contact.getName());
         phoneLabel.setText(contact.getPhone());
         emailLabel.setText(contact.getEmail().isEmpty() ? "—" : contact.getEmail());
         ipLabel.setText(contact.getIP().isEmpty()       ? "—" : contact.getIP());
         notesLabel.setText(contact.getNotes().isEmpty() ? "—" : contact.getNotes());
         favLabel.setText(contact.isFav()                ? "★ Favorite" : " ");
-
-        revalidate();
-        repaint();
+        
+        SwingUtilities.invokeLater(()->{
+            revalidate();
+            repaint();
+        });
     }
 
     public void enterEditMode(Contact contact) {
-
         nameField.setText(contact.getName());
         phoneField.setText(contact.getPhone());
         emailField.setText(contact.getEmail());
@@ -233,7 +238,6 @@ public class DetailPanel extends JPanel {
     }
 
     public void exitEditMode(Contact contact) {
-
         contact.setName(nameField.getText().trim());
         contact.setPhone(phoneField.getText().trim());
         contact.setEmail(emailField.getText().trim());
@@ -241,32 +245,34 @@ public class DetailPanel extends JPanel {
         contact.setNotes(notesField.getText().trim());
 
         remove(infoFieldBox);
-        // initInfoLabelBox();
         add(infoLabelBox, BorderLayout.CENTER);
 
         nameLabel.setVisible(true);
-
+        editButton.setText("Edit");
         showContact(contact);
 
-        editButton.setText("Edit");
-
-        revalidate();
-        repaint();
+        SwingUtilities.invokeLater(() -> {
+            revalidate();
+            repaint();
+        });
     }
 
     private void styleEditField(JTextField field) {
         field.setBackground(new Color(33, 38, 45));
-        field.setForeground(new Color(230, 237, 243));
-        field.setCaretColor(new Color(230, 237, 243));
         field.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
-        field.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(48, 54, 61), 1),
-            BorderFactory.createEmptyBorder(2, 6, 2, 6)
-        ));
+        // field.setForeground(new Color(230, 237, 243));
+        // field.setCaretColor(new Color(230, 237, 243));
+        // field.setBorder(BorderFactory.createCompoundBorder(
+        //     BorderFactory.createLineBorder(, 1),
+        //     BorderFactory.createEmptyBorder(2, 6, 2, 6) // Internal padding
+        // ));
+        // field.putClientProperty("JComponent.roundRect", true);
+        // field.putClientProperty("JComponent.arc", 10);
+        // field.putClientProperty("JComponent.outline", "default");
     }
 
     public void clearPanel() {
-        avatarLabel.setIcon(null);
+        avatar.setIcon(null);
         nameLabel.setText("");
         phoneLabel.setText("");
         emailLabel.setText("");
@@ -275,8 +281,7 @@ public class DetailPanel extends JPanel {
         favLabel.setText(" ");
         repaint();
     }
-
-    
+ 
     private ImageIcon loadAvatar(String path, int size) {
         File file = new File(path);
         if (!file.exists()) {
@@ -289,8 +294,7 @@ public class DetailPanel extends JPanel {
             }
         } catch (IOException e) {}
         return new ImageIcon();
-    }
-    
+    }  
 
     public JButton getFavButton()    { return favButton;    }
     public JButton getEditButton()   { return editButton;   }

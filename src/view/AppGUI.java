@@ -106,6 +106,7 @@ public class AppGUI {
             BorderFactory.createLineBorder(borderColor, 2),
             BorderFactory.createEmptyBorder(7, 10, 7, 10)
         ));
+
         searchField.setPreferredSize(new Dimension(1000, 40));
 
         searchField.setText("Search contacts...");

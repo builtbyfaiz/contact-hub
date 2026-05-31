@@ -87,10 +87,9 @@ public class ContactController {
             Contact newContact = new Contact(uuid, "New Contact", "", "", "", "", "resources/avatars/default.png",
                     false);
             storage.saveContact(newContact);
-            // toggleEditMode(false);
             selectedContact = newContact;
             loadContactCards();
-            view.getDetailPanel().showContact(selectedContact);
+            view.getDetailPanel().showContact(newContact);
             toggleEditMode(true);
         });
     }
@@ -119,6 +118,9 @@ public class ContactController {
         view.getDetailPanel().getDeleteButton().addActionListener(e -> {
             if (selectedContact == null)
                 return;
+            if(isEditMode)
+                toggleEditMode(false);
+
             String uuid = selectedContact.getUUID();
             storage.deleteContact(uuid);
             selectedContact = null;

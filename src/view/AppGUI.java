@@ -70,29 +70,29 @@ public class AppGUI {
         JPanel topBox = new JPanel();
         topBox.setLayout(new BoxLayout(topBox, BoxLayout.Y_AXIS));
         topBox.setBackground(bgSidepanel);
-        topBox.setBorder(BorderFactory.createEmptyBorder(14, 12, 8, 12));
+        topBox.setBorder(BorderFactory.createEmptyBorder(16, 12, 12, 12));
 
         initSearchField();
         initFilterButtons();
 
         topBox.add(searchField);
-        topBox.add(Box.createVerticalStrut(10));
+        topBox.add(Box.createVerticalStrut(12));
 
-        JPanel filterButtonsRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
+        JPanel filterButtonsRow = new JPanel();
+        filterButtonsRow.setLayout(new BoxLayout(filterButtonsRow, BoxLayout.X_AXIS));
         filterButtonsRow.setBackground(bgSidepanel);
         filterButtonsRow.add(allButton);
         filterButtonsRow.add(favButton);
 
+        // topBox.add(Box.createVerticalStrut(12));
         topBox.add(filterButtonsRow);
-        topBox.add(Box.createVerticalStrut(6));
         sidePanel.add(topBox, BorderLayout.NORTH);
 
         initContactList();
         initScrollPane();
-        sidePanel.add(scrollpane, BorderLayout.CENTER);
-        
         initNewContactButton();
 
+        sidePanel.add(scrollpane, BorderLayout.CENTER);
         sidePanel.add(newContactButton, BorderLayout.SOUTH);
     }
 
@@ -106,7 +106,7 @@ public class AppGUI {
             BorderFactory.createLineBorder(borderColor, 2),
             BorderFactory.createEmptyBorder(7, 10, 7, 10)
         ));
-        searchField.setPreferredSize(new Dimension(1000, 34));
+        searchField.setPreferredSize(new Dimension(1000, 40));
 
         searchField.setText("Search contacts...");
         searchField.setForeground(textSecondary); // Placeholder Text Color
@@ -141,14 +141,14 @@ public class AppGUI {
     }
 
     private void initNewContactButton() {
-        newContactButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14)); //we13
+        newContactButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14)); 
         newContactButton.setBackground(bgSidepanel);
         newContactButton.setForeground(accentBlue);
         newContactButton.setFocusPainted(false);
         newContactButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         newContactButton.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createMatteBorder(1, 0, 0, 0, borderColor),
-            BorderFactory.createEmptyBorder(12, 16, 12, 16)
+            BorderFactory.createEmptyBorder(16, 16, 16, 16)
         ));
     }
 
@@ -162,12 +162,12 @@ public class AppGUI {
     }
     
     private void styleFilterButton(JButton button, boolean active) {
-        button.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13)); //we12
+        button.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13)); 
         button.setFocusPainted(false); // Removes Tab highlighting
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(active ? accentBlue : borderColor, 1),
-            BorderFactory.createEmptyBorder(4, 12, 4, 12)
+            BorderFactory.createEmptyBorder(8, 12, 4, 12)
         ));
         button.setBackground(active ? accentBlue  : accentGray);
         button.setForeground(active ? textPrimary : textSecondary);

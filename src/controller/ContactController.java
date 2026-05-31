@@ -14,10 +14,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.swing.JButton;
-import javax.swing.JToggleButton;
 
 public class ContactController {
 
@@ -30,12 +26,14 @@ public class ContactController {
     private boolean isFavFilterOn    = false;
     private boolean isEditMode       = false;
 
-    public ContactController(AppGUI view) {
-        this.view = view;
+    public ContactController(AppGUI view, List<Contact> contacts) {
+        this.view    = view;
         this.storage = new ContactStorage();
-        this.contacts = storage.loadContacts();
 
-        updateContactList(contacts);
+        contacts      = storage.loadContacts();
+        this.contacts = contacts;
+
+        createContactCards(contacts);
         bindEvents();
     }
 
@@ -52,7 +50,7 @@ public class ContactController {
                 String searchQuery = view.getSearchField().getText().trim().toLowerCase();
 
                 if (searchQuery.equals("search contacts...") || searchQuery.isEmpty()) {
-                    updateContactList(isFavFilterOn ? getFavContacts() : contacts);
+                    createContactCards(isFavFilterOn ? getFavContacts() : contacts);
                     return;
                 }
 
@@ -60,11 +58,11 @@ public class ContactController {
                 List<Contact> listToSearch = isFavFilterOn ? getFavContacts() : contacts;
 
                 for (Contact c : listToSearch) {
-                    if (c.getName ().toLowerCase().contains(searchQuery) ||
-                        c.getPhone().toLowerCase().contains(searchQuery))
+                    if (c.getName().toLowerCase().contains(searchQuery) ||
+                            c.getPhone().toLowerCase().contains(searchQuery))
                         filteredList.add(c);
                 }
-                updateContactList(filteredList);
+                createContactCards(filteredList);
             }
         });
     }
@@ -73,78 +71,82 @@ public class ContactController {
         view.getAllButton().addActionListener(e -> {
             isFavFilterOn = false;
             view.toggleFavFilter(false); // Styles the buttons upon toggle
-            updateContactList(contacts);
+            createContactCards(contacts);
         });
 
         view.getFavButton().addActionListener(e -> {
             isFavFilterOn = true;
             view.toggleFavFilter(true); // Styles the buttons upon toggle
-            updateContactList(getFavContacts());
+            createContactCards(getFavContacts());
         });
     }
 
     private void bindNewContact() {
         view.getNewContactButton().addActionListener(e -> {
             String uuid = UUID.randomUUID().toString();
-            Contact newContact = new Contact(uuid, "New Contact", "", "", "", "", "resources/avatars/default.png", false);
+            Contact newContact = new Contact(uuid, "New Contact", "", "", "", "", "resources/avatars/default.png",
+                    false);
             storage.saveContact(newContact);
-            toggleEditMode();
+            // toggleEditMode(false);
             selectedContact = newContact;
-            syncContactCardList();
+            loadContactCards();
             view.getDetailPanel().showContact(selectedContact);
-            view.getDetailPanel().enterEditMode(newContact);
+            toggleEditMode(true);
         });
     }
 
-    private void syncContactCardList() {
+    private void loadContactCards() {
         contacts = storage.loadContacts();
-        if(isFavFilterOn)
-            updateContactList(getFavContacts());
+        if (isFavFilterOn)
+            createContactCards(getFavContacts());
         else
-            updateContactList(contacts);
+            createContactCards(contacts);
     }
 
     private void bindContactActionButtons() {
         view.getDetailPanel().getFavButton().addActionListener(e -> {
-            if (selectedContact == null) return;
+            if (selectedContact == null)
+                return;
 
             selectedContact.toggleFav();
             storage.saveContact(selectedContact);
-            syncContactCardList();
+            loadContactCards();
 
-            if(selectedContact != null)
+            if (selectedContact != null)
                 view.getDetailPanel().showContact(selectedContact); // Update GUI
         });
 
         view.getDetailPanel().getDeleteButton().addActionListener(e -> {
-            if (selectedContact == null) return;
+            if (selectedContact == null)
+                return;
             String uuid = selectedContact.getUUID();
             storage.deleteContact(uuid);
             selectedContact = null;
-            syncContactCardList();
-        });      
-        
-        view.getDetailPanel().getEditButton().addActionListener(e -> {
-            if (selectedContact == null) return;
-        
-            toggleEditMode();
+            loadContactCards();
+        });
 
-            if(isEditMode) {
-                view.getDetailPanel().enterEditMode(selectedContact);
-            } else {
-                view.getDetailPanel().exitEditMode(selectedContact);
-                storage.saveContact(selectedContact);
-                syncContactCardList();
-                view.getDetailPanel().showContact(selectedContact);
-            }
+        view.getDetailPanel().getEditButton().addActionListener(e -> {
+            if (selectedContact == null)
+                return;
+
+            isEditMode = !isEditMode;
+            toggleEditMode(isEditMode);
         });
     }
-    
-    private void toggleEditMode() {
-        isEditMode = !isEditMode;
+
+    private void toggleEditMode(boolean state) {
+        isEditMode = state;
+        if (isEditMode) {
+            view.getDetailPanel().enterEditMode(selectedContact);
+        } else {
+            view.getDetailPanel().exitEditMode(selectedContact);
+            storage.saveContact(selectedContact);
+            loadContactCards();
+            view.getDetailPanel().showContact(selectedContact);
+        }
     }
 
-    private void updateContactList(List<Contact> list) {
+    private void createContactCards(List<Contact> list) {
         view.clearContactCards();
         view.getDetailPanel().clearPanel();
 
@@ -152,7 +154,7 @@ public class ContactController {
 
         for (Contact contact : list) {
             ContactCard card = new ContactCard(contact);
-            
+
             if (selectedContact != null && contact.getUUID().equals(selectedContact.getUUID())) {
                 cardToSelect    = card;
                 selectedContact = contact;
@@ -160,11 +162,14 @@ public class ContactController {
 
             card.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
+                    if(isEditMode)
+                        toggleEditMode(false);
+
                     if (selectedCard != null)
                         selectedCard.toggleSelected(false);
 
-                    selectedCard    = card;     
-                    selectedContact = contact;  
+                    selectedCard    = card;
+                    selectedContact = contact;
 
                     card.toggleSelected(true);
                     view.getDetailPanel().showContact(contact);
@@ -173,11 +178,9 @@ public class ContactController {
 
             view.addContactCard(card);
         }
-
-        // view.addContactCard((Component) javax.swing.Box.createVerticalGlue());
         view.refreshContactList();
 
-        // Preserve Selection
+        // Preserve Selection after refresh
         if (cardToSelect != null) {
             selectedCard = cardToSelect;
             selectedCard.toggleSelected(true);
@@ -190,8 +193,13 @@ public class ContactController {
     }
 
     private List<Contact> getFavContacts() {
-        return contacts.stream()
-                .filter(Contact::isFav)
-                .collect(Collectors.toList());
+        List<Contact> favContacts = new ArrayList<>();
+
+        for (var contact : contacts) {
+            if (contact.isFav())
+                favContacts.add(contact);
+        }
+
+        return favContacts;
     }
 }

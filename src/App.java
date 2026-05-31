@@ -1,6 +1,6 @@
 import com.formdev.flatlaf.FlatDarkLaf;
 
-import controller.ContactController;
+import controller.MainController;
 import view.AppGUI;
 
 class App {
@@ -8,6 +8,6 @@ class App {
         FlatDarkLaf.setup(); // Automatic Setup
 
         AppGUI view = new AppGUI();
-        new ContactController(view);
+        new MainController(view);
     }
 }

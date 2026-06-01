@@ -60,7 +60,7 @@ public class ContactStorage {
         }
 
         if (!found)
-            contacts.add(contact); // Adds new contact
+            contacts.add(contact); // Adds new contact to list
 
         saveAllContacts(contacts);
     }

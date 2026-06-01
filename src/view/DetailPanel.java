@@ -81,8 +81,9 @@ public class DetailPanel extends JPanel {
 
         add(contactHeader, BorderLayout.NORTH);
     }
-
+    
     private void createContactInfoLabels() {
+
         contactInfoLabels.setLayout(new BoxLayout(contactInfoLabels, BoxLayout.Y_AXIS));
         contactInfoLabels.setBackground(Theme.BG_MAIN);
 
@@ -117,26 +118,26 @@ public class DetailPanel extends JPanel {
         contactInfoFields.add(createFieldRow("Notes", notesField));
     }
 
-    private JPanel createLabelRow(String fieldName, JLabel valueLabel) {
+    private JPanel createLabelRow(String fieldName, JLabel label) {
         JPanel row = new JPanel(new BorderLayout(16, 0));
         row.setBackground(Theme.BG_CARD);
         row.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createMatteBorder(0, 0, 1, 0, Theme.BORDER_COLOR),
-            BorderFactory.createEmptyBorder(10, 14, 10, 14)
+            BorderFactory.createMatteBorder(0, 0, 2, 0, Theme.BORDER_COLOR),
+            BorderFactory.createEmptyBorder(8, 14, 8, 14)
         ));
 
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
         JLabel fieldLabel = new JLabel(fieldName+":-");
-        fieldLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
+        fieldLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
         fieldLabel.setForeground(Theme.TEXT_SECONDARY);
-        fieldLabel.setPreferredSize(new Dimension(56, 22));
+        fieldLabel.setPreferredSize(new Dimension(56, 24));
 
-        valueLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
-        valueLabel.setForeground(Theme.TEXT_PRIMARY);
+        label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        label.setForeground(Theme.TEXT_PRIMARY);
 
         row.add(fieldLabel, BorderLayout.WEST);
-        row.add(valueLabel, BorderLayout.CENTER);
+        row.add(label, BorderLayout.CENTER);
 
         return row;
     }
@@ -145,16 +146,16 @@ public class DetailPanel extends JPanel {
         JPanel row = new JPanel(new BorderLayout(16, 0));
         row.setBackground(Theme.BG_CARD);
         row.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createMatteBorder(0, 0, 1, 0, Theme.BORDER_COLOR),
-            BorderFactory.createEmptyBorder(10, 14, 10, 14)
+            BorderFactory.createMatteBorder(0, 0, 2, 0, Theme.BORDER_COLOR),
+            BorderFactory.createEmptyBorder(8, 14, 8, 14)
         ));
 
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 48));
 
         JLabel fieldLabel = new JLabel(fieldName + ":-");
-        fieldLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
+        fieldLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
         fieldLabel.setForeground(Theme.TEXT_SECONDARY);
-        fieldLabel.setPreferredSize(new Dimension(56, 22));
+        fieldLabel.setPreferredSize(new Dimension(56, 24));
 
         styleEditField(field);
 
@@ -194,14 +195,12 @@ public class DetailPanel extends JPanel {
     public void showContact(Contact contact) {
         avatar.setIcon(loadAvatar(contact.getAvatarPath(), 100));
         avatar.setHorizontalAlignment(SwingConstants.CENTER);
-        // avatar.setBorder(BorderFactory.createLineBorder(Color.red,2));
         nameLabel.setText(contact.getName());
         phoneLabel.setText(contact.getPhone());
         emailLabel.setText(contact.getEmail().isEmpty() ? "—" : contact.getEmail());
         ipLabel.setText(contact.getIP().isEmpty()       ? "—" : contact.getIP());
         notesLabel.setText(contact.getNotes().isEmpty() ? "—" : contact.getNotes());
         favLabel.setText(contact.getFav()                ? "★ Favorite" : " ");
-        
         
         revalidate();
         repaint();

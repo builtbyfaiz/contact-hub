@@ -195,12 +195,12 @@ public class MainController {
                         toggleEditMode(false);
 
                     if (selectedCard != null)
-                        selectedCard.toggleSelected(false);
+                        selectedCard.setSelected(false);
 
                     selectedCard    = card;
                     selectedContact = contact;
 
-                    card.toggleSelected(true);
+                    card.setSelected(true);
                     view.getDetailPanel().showContact(contact);
                 }
             });
@@ -212,7 +212,7 @@ public class MainController {
         // Preserve Selection after refresh
         if (cardToSelect != null) {
             selectedCard = cardToSelect;
-            selectedCard.toggleSelected(true);
+            selectedCard.setSelected(true);
             view.getDetailPanel().showContact(selectedContact);
         } else {
             // If selected card is notpresent in our lists, then remove references

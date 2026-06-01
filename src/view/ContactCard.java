@@ -9,10 +9,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
+/** The {@code ContactCard} class represents a single GUI element/card created from a specific contact */
 public class ContactCard extends JPanel {
-
-
-
     private JLabel avatarLabel = new JLabel();
     private JPanel textBlock   = new JPanel();
     private JLabel nameLabel   = new JLabel();
@@ -94,7 +92,8 @@ public class ContactCard extends JPanel {
         return new ImageIcon();
     }
 
-    public void toggleSelected(boolean selected) {
+    /// Setters
+    public void setSelected(boolean selected) {
         this.selected = selected;
         setCardBackground(selected ? Theme.CARD_SELECTED : Theme.BG_CARD);
     }
@@ -102,9 +101,5 @@ public class ContactCard extends JPanel {
     private void setCardBackground(Color color) {
         setBackground(color);
         repaint();
-    }
-
-    public boolean isSelected() {
-        return selected;
     }
 }

@@ -58,6 +58,20 @@ public class AppGUI {
         sidePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Theme.BORDER_COLOR));
 
         JPanel topBox = new JPanel();
+        JPanel filterButtons = createFilterButtons(topBox);
+
+        topBox.add(filterButtons);
+        sidePanel.add(topBox, BorderLayout.NORTH);
+
+        initContactList();
+        initScrollPane();
+        initNewContactButton();
+
+        sidePanel.add(scrollpane, BorderLayout.CENTER);
+        sidePanel.add(newContactButton, BorderLayout.SOUTH);
+    }
+
+    private JPanel createFilterButtons(JPanel topBox) {
         topBox.setLayout(new BoxLayout(topBox, BoxLayout.Y_AXIS));
         topBox.setBackground(Theme.BG_SIDEPANEL);
         topBox.setBorder(BorderFactory.createEmptyBorder(16, 12, 12, 12));
@@ -73,17 +87,7 @@ public class AppGUI {
         filterButtonsRow.setBackground(Theme.BG_SIDEPANEL);
         filterButtonsRow.add(allButton);
         filterButtonsRow.add(favButton);
-
-        // topBox.add(Box.createVerticalStrut(12));
-        topBox.add(filterButtonsRow);
-        sidePanel.add(topBox, BorderLayout.NORTH);
-
-        initContactList();
-        initScrollPane();
-        initNewContactButton();
-
-        sidePanel.add(scrollpane, BorderLayout.CENTER);
-        sidePanel.add(newContactButton, BorderLayout.SOUTH);
+        return filterButtonsRow;
     }
 
     private void initSearchField() {

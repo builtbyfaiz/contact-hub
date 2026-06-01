@@ -1,15 +1,16 @@
 package view;
 
-import model.Contact;
-import model.Theme;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
+import model.Contact;
+import model.Theme;
+import service.Validator;
 
 /** Panel containing contact details and contact action buttons. */
 public class DetailPanel extends JPanel {
@@ -41,18 +42,28 @@ public class DetailPanel extends JPanel {
     private JButton editButton   = new JButton("Edit");
     private JButton deleteButton = new JButton("Delete");
 
+    // Constructor
     DetailPanel() {
+        setupDetailPanel();
+        initComponents();
+    }
+
+    // -- Sidebar Configuration --
+    private void setupDetailPanel() {
         setLayout(new BorderLayout());
         setBackground(Theme.BG_MAIN);
         setBorder(BorderFactory.createEmptyBorder(32, 32, 32, 32));
-
-        initAvatarBox();
-        createContactInfoLabels();
-        createContactInfoFields();
-        initActionButtons();
     }
-
-    private void initAvatarBox() {
+    
+    private void initComponents() {
+        initContactHeader();      // Contains Avatar, Name
+        initContactInfoLabels();  // Information Labels to show label output
+        initContactInfoFields();  // Information Fields to take input
+        initActionButtons();      // Action buttons (Edit, Favorite, Delete)
+    }
+    
+    // -- Region Initialization --
+    private void initContactHeader() {
         JPanel contactHeader = new JPanel();
         contactHeader.setLayout(new BoxLayout(contactHeader, BoxLayout.Y_AXIS));
         contactHeader.setBackground(Theme.BG_MAIN);
@@ -72,6 +83,7 @@ public class DetailPanel extends JPanel {
         favLabel.setForeground(Theme.ACCENT_YELLOW);
         favLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // Add Components to header
         contactHeader.add(avatar);
         contactHeader.add(Box.createVerticalStrut(12));
         contactHeader.add(nameLabel);
@@ -79,10 +91,10 @@ public class DetailPanel extends JPanel {
         contactHeader.add(favLabel);
         contactHeader.add(Box.createVerticalStrut(24));
 
-        add(contactHeader, BorderLayout.NORTH);
+        add(contactHeader, BorderLayout.NORTH); // Add to detailsPanel
     }
-    
-    private void createContactInfoLabels() {
+
+    private void initContactInfoLabels() {
 
         contactInfoLabels.setLayout(new BoxLayout(contactInfoLabels, BoxLayout.Y_AXIS));
         contactInfoLabels.setBackground(Theme.BG_MAIN);
@@ -101,7 +113,7 @@ public class DetailPanel extends JPanel {
         add(contactInfoLabels, BorderLayout.CENTER);
     }
 
-    private void createContactInfoFields() {
+    private void initContactInfoFields() {
         contactInfoFields.setLayout(new BoxLayout(contactInfoFields, BoxLayout.Y_AXIS));
         contactInfoFields.setBackground(Theme.BG_MAIN);
 
@@ -117,7 +129,27 @@ public class DetailPanel extends JPanel {
         contactInfoFields.add(gap);
         contactInfoFields.add(createFieldRow("Notes", notesField));
     }
+    
+    private void initActionButtons() {
+        JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonRow.setBackground(Theme.BG_MAIN);
 
+        styleActionButton(favButton,    Theme.ACCENT_BLUE, Theme.TEXT_PRIMARY);
+        styleActionButton(editButton,   Theme.ACCENT_GRAY, Theme.TEXT_PRIMARY);
+        styleActionButton(deleteButton, Theme.ACCENT_RED , Theme.TEXT_PRIMARY);
+
+        favButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        editButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        deleteButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+
+        buttonRow.add(favButton);
+        buttonRow.add(editButton);
+        buttonRow.add(deleteButton);
+
+        add(buttonRow, BorderLayout.SOUTH);
+    }
+
+    // -- Component by Component Initialization --
     private JPanel createLabelRow(String fieldName, JLabel label) {
         JPanel row = new JPanel(new BorderLayout(16, 0));
         row.setBackground(Theme.BG_CARD);
@@ -163,24 +195,10 @@ public class DetailPanel extends JPanel {
         row.add(field, BorderLayout.CENTER);
         return row;
     }
-
-    private void initActionButtons() {
-        JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonRow.setBackground(Theme.BG_MAIN);
-
-        styleActionButton(favButton,    Theme.ACCENT_BLUE, Theme.TEXT_PRIMARY);
-        styleActionButton(editButton,   Theme.ACCENT_GRAY, Theme.TEXT_PRIMARY);
-        styleActionButton(deleteButton, Theme.ACCENT_RED , Theme.TEXT_PRIMARY);
-
-        favButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        editButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        deleteButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-
-        buttonRow.add(favButton);
-        buttonRow.add(editButton);
-        buttonRow.add(deleteButton);
-
-        add(buttonRow, BorderLayout.SOUTH);
+    
+    private void styleEditField(JTextField field) {
+        field.setBackground(new Color(33, 38, 45));
+        field.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
     }
 
     private void styleActionButton(JButton button, Color bg, Color fg) {
@@ -192,6 +210,7 @@ public class DetailPanel extends JPanel {
         button.setFocusPainted(false);
     }
 
+    // -- Utils --
     public void showContact(Contact contact) {
         avatar.setIcon(loadAvatar(contact.getAvatarPath(), 100));
         avatar.setHorizontalAlignment(SwingConstants.CENTER);
@@ -206,6 +225,33 @@ public class DetailPanel extends JPanel {
         repaint();
     }
 
+    private ImageIcon loadAvatar(String path, int size) {
+        
+        File file = new File(path);
+        if (!file.exists()) {
+            file = new File("resources/avatars/default.png");
+        }
+        try {
+            BufferedImage img = ImageIO.read(file);
+            if (img != null) {
+                return new ImageIcon(img.getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            }
+        } catch (IOException e) {}
+        return new ImageIcon();
+    }  
+   
+    public void clearPanel() {
+        avatar.setIcon(null);
+        nameLabel.setText("");
+        phoneLabel.setText("");
+        emailLabel.setText("");
+        ipLabel.setText("");
+        notesLabel.setText("");
+        favLabel.setText(" ");
+        repaint();
+    }
+
+    // -- Edit Mode --
     public void enterEditMode(Contact contact) {
         nameField.setText(contact.getName());
         phoneField.setText(contact.getPhone());
@@ -244,38 +290,29 @@ public class DetailPanel extends JPanel {
         repaint();
     }
 
-    private void styleEditField(JTextField field) {
-        field.setBackground(new Color(33, 38, 45));
-        field.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
+    // -- Getters --
+    public JLabel  getAvatar()         { return avatar;        }
+    public JButton getFavButton()      { return favButton;     }
+    public JButton getEditButton()     { return editButton;    }
+    public JButton getDeleteButton()   { return deleteButton;  }
+
+    public boolean validateFields() {
+        boolean isEmailValid = Validator.isEmail(emailField.getText().trim());
+        boolean isPhoneValid = Validator.isPhone(phoneField.getText().trim());
+
+        updateFieldValidationState(emailField, isEmailValid);
+        updateFieldValidationState(phoneField, isPhoneValid);
+
+        if (!isEmailValid || !isPhoneValid) 
+            return false;
+        else
+            return true;
     }
 
-    public void clearPanel() {
-        avatar.setIcon(null);
-        nameLabel.setText("");
-        phoneLabel.setText("");
-        emailLabel.setText("");
-        ipLabel.setText("");
-        notesLabel.setText("");
-        favLabel.setText(" ");
-        repaint();
+    public void updateFieldValidationState(JTextField field, boolean valid) {
+        if(valid)
+            field.putClientProperty("JComponent.outline", null);
+        else 
+            field.putClientProperty("JComponent.outline", "error");
     }
- 
-    private ImageIcon loadAvatar(String path, int size) {
-        File file = new File(path);
-        if (!file.exists()) {
-            file = new File("resources/avatars/default.png");
-        }
-        try {
-            BufferedImage img = ImageIO.read(file);
-            if (img != null) {
-                return new ImageIcon(img.getScaledInstance(size, size, Image.SCALE_SMOOTH));
-            }
-        } catch (IOException e) {}
-        return new ImageIcon();
-    }  
-
-    public JLabel  getAvatar()       { return avatar;       }
-    public JButton getFavButton()    { return favButton;    }
-    public JButton getEditButton()   { return editButton;   }
-    public JButton getDeleteButton() { return deleteButton; }
 }

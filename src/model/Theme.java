@@ -2,7 +2,7 @@ package model;
 
 import java.awt.Color;
 
-//* Provides a Darkmode color pallete for the application */
+/** Provides a darkmode color pallete for the application */
 public class Theme {
     
     /// Main Colors
@@ -10,7 +10,7 @@ public class Theme {
     public static final Color BG_SIDEPANEL = new Color(22, 27, 34);
     public static final Color BG_CARD      = new Color(22, 27, 34);
 
-    // Components Text Colors
+    // Component Text Colors
     public static final Color TEXT_PRIMARY   = new Color(230, 237, 243);
     public static final Color TEXT_SECONDARY = new Color(125, 133, 144);
 
@@ -24,5 +24,6 @@ public class Theme {
     public static final Color CARD_HOVER    = new Color(30, 38, 50);
     public static final Color CARD_SELECTED = new Color(20, 50, 90);
 
+    // Border Color
     public static final Color BORDER_COLOR = new Color(48, 54, 61);
 }

@@ -68,5 +68,15 @@
     "ip": "192.168.10.110",
     "avatarPath": "D:\\Coding-Projects\\contact-hub\\resources\\avatars\\Faiz-Green.png",
     "isFav": true
+  },
+  {
+    "uuid": "b033d121-0662-439a-be84-40d17f84ff03",
+    "name": "New Contact",
+    "phone": "03334792767",
+    "email": "mail@mail.com",
+    "notes": "",
+    "ip": "",
+    "avatarPath": "resources/avatars/default.png",
+    "isFav": false
   }
 ]

@@ -72,6 +72,8 @@ public class ContactCard extends JPanel {
         numLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
     }
 
+    // -- Utils --
+
     private ImageIcon loadAvatar(String path, int size) {
         try {
             BufferedImage img = ImageIO.read(new File(path));
